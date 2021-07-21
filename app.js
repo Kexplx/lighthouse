@@ -2,6 +2,7 @@ const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 const TimeObserver = require('./utils/time-observer');
 const chalk = require('chalk');
+const fs = require("fs");
 const median = require('./utils/median');
 const desktopConfig = require('./lighthouse-config/desktop-config');
 
@@ -74,14 +75,17 @@ async function profile(url, runs, emulator) {
     timeObserver.measure(`Run ${i + 1}`, 'run_start');
   }
 
-  console.log(`
+  const result = `
 The results are the medians of all ${runs} runs:
 - LCP (${chalk.green('Core Web Vital')}) = ${Math.round(median(lcpTimes))} ms 
 - CLS (${chalk.green('Core Web Vital')}) = ${Math.round(median(clsTimes))} ms
+- TBT (${chalk.green('Core Web Vital')}) = ${Math.round(median(tbtTimes))} ms
 - FCP = ${Math.round(median(fcpTimes))} ms
 - Speed Index = ${Math.round(median(speedIndexTimes))} ms
 - TTI = ${Math.round(median(ttiTimes))} ms
-- TBT = ${Math.round(median(tbtTimes))} ms
 - Redirects = ${Math.round(median(redirectsTimes))}
-- Lighthouse Performance = ${Math.round(median(performanceTimes))}`);
+- Lighthouse Performance = ${Math.round(median(performanceTimes))}`;
+
+  console.log(result);
+  fs.writeFileSync("latest.txt", result);
 }
