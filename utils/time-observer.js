@@ -1,11 +1,11 @@
-const { PerformanceObserver, performance } = require("perf_hooks");
+const { PerformanceObserver, performance } = require('perf_hooks');
 
 class TimeObserver {
   constructor() {
     this.measurements = [];
     this.isObserving = false;
 
-    this.observer = new PerformanceObserver((items) => {
+    this.observer = new PerformanceObserver(items => {
       const { name, duration } = items.getEntries()[0];
 
       console.log(`${name} finished after ${Math.round(duration)} ms`);
@@ -14,7 +14,7 @@ class TimeObserver {
 
   observe() {
     if (this.isObserving === false) {
-      this.observer.observe({ entryTypes: ["measure"] });
+      this.observer.observe({ entryTypes: ['measure'] });
 
       this.isObserving = true;
     }
