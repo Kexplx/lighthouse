@@ -3,7 +3,7 @@ const chromeLauncher = require("chrome-launcher");
 const TimeObserver = require("./utils/time-observer");
 const chalk = require("chalk");
 const median = require("./utils/median");
-const desktopConfig = require("./desktop-config");
+const desktopConfig = require("./lighthouse-config/desktop-config");
 
 const timeObserver = new TimeObserver();
 
