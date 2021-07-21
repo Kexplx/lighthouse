@@ -1,13 +1,20 @@
 {
   "name": "lighthouse",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "CLI tool for profiling a website with lighthouse.",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "qdacity-test": "node app.js https://4-dot-qdacity-testenvironment.appspot.com/ 1 desktop"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Lighthouse",
+    "Web",
+    "Performance",
+    "Core Web Vitals",
+    "Google",
+    "Chrome"
+  ],
+  "author": "Oscar Rosner",
   "license": "ISC",
   "dependencies": {
     "chalk": "^3.0.0",
