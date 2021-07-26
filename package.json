@@ -4,7 +4,7 @@
   "description": "CLI tool for profiling a website with lighthouse.",
   "main": "app.js",
   "scripts": {
-    "qdacity-test": "node app.js https://4-dot-qdacity-testenvironment.appspot.com/ 1 desktop"
+    "qdacity-test": "node app.js https://4-dot-qdacity-testenvironment.appspot.com/ 3 desktop"
   },
   "keywords": [
     "Lighthouse",

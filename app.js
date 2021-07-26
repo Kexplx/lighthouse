@@ -38,6 +38,14 @@ async function profile(url, runs, emulator) {
   const redirectsTimes = [];
   const performanceTimes = [];
 
+  const mainBundleTotalCpuTimeTimes = [];
+  const mainBundleScriptingTimeTimes = [];
+  const mainBundleParsingTimeTimes = [];
+
+  const mainBundleSizeTimes = [];
+  const mainBundleGzippedTimes = [];
+  const mainBundleDownloadTimes = [];
+
   for (let i = 0; i < runs; i++) {
     timeObserver.mark('run_start');
     const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless'] });
@@ -59,15 +67,29 @@ async function profile(url, runs, emulator) {
       'largest-contentful-paint': { numericValue: lcp },
       interactive: { numericValue: tti },
       redirects: { numericValue: redirects },
+      "bootup-time": {details: {items: [mainBundleCPUTime]}},
+      "network-requests": {details: {items: networkreqeusts}}
     } = runnerResult.lhr.audits;
 
     fcpTimes.push(fcp);
     lcpTimes.push(lcp);
     tbtTimes.push(tbt);
-    speedIndexTimes.push(speedIndex);
     clsTimes.push(cls);
+    speedIndexTimes.push(speedIndex);
     ttiTimes.push(tti);
     redirectsTimes.push(redirects);
+
+    // JS execution metrics (index.dist.js)
+    mainBundleTotalCpuTimeTimes.push(mainBundleCPUTime.total);
+    mainBundleScriptingTimeTimes.push(mainBundleCPUTime.scripting);
+    mainBundleParsingTimeTimes.push(mainBundleCPUTime.scriptParseCompile);
+    
+    // Network metrics (index.dist.js)
+    const mainBundleReq = networkreqeusts.find(req => req.url.endsWith("/dist/js/index.dist.js"));
+    mainBundleDownloadTimes.push(mainBundleReq.endTime - mainBundleReq.startTime);
+    mainBundleSizeTimes.push(mainBundleReq.resourceSize);
+    mainBundleGzippedTimes.push(mainBundleReq.transferSize);
+
     performanceTimes.push(runnerResult.lhr.categories.performance.score * 100);
 
     await chrome.kill();
@@ -84,8 +106,13 @@ The results are the medians of all ${runs} runs:
 - Speed Index = ${Math.round(median(speedIndexTimes))} ms
 - TTI = ${Math.round(median(ttiTimes))} ms
 - Redirects = ${Math.round(median(redirectsTimes))}
+- index.dist.js
+  - download time = ${Math.round(median(mainBundleDownloadTimes))} ms
+  - transfer/gzipped size = ${Math.round(median(mainBundleGzippedTimes)) / 1000} MB
+  - unpacked size = ${Math.round(median(mainBundleSizeTimes))  / 1000} MB
+  - (parse + compile + execute) time = ${Math.round(median(mainBundleTotalCpuTimeTimes))} ms
 - Lighthouse Performance = ${Math.round(median(performanceTimes))}`;
 
-  console.log(result);
+console.log(result);
   fs.writeFileSync("latest.txt", result);
 }
